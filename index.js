@@ -17,9 +17,9 @@ const updateBus = (id, cods) => {
 
 
 app.use(express.json());
-app.use("/", auth);
+app.use("/api", auth);
 
-app.get("/", ({ query: { id } }, res) => {
+app.get("/api", ({ query: { id } }, res) => {
   if (!id)
     res.send(buses);
   else if (!buses.hasOwnProperty(id)) {
@@ -30,18 +30,18 @@ app.get("/", ({ query: { id } }, res) => {
     res.send(buses[id])
 })
 
-app.post("/", ({body, body: {id}}, res) => {
-  if (!id || !body.lon || !body.lat) res.send("incomplete request!");
+app.get("/api/set", ({query: {id, lon, lat}}, res) => {
+  if (!id || !lon || !lat) res.send("incomplete request!");
   else if (!buses.hasOwnProperty(id))
     res.send("key not found!");
   else {
-    const lon = Number.parseFloat(body.lon)
-    const lat = Number.parseFloat(body.lat);
+    const myLon = Number.parseFloat(lon)
+    const myLat = Number.parseFloat(lat);
     if(isNaN(lon) || isNaN(lat)){
       res.send("parameter type mismatched!");
     }
     else {
-    updateBus(id, {lon, lat});
+    updateBus(id, {myLon, myLat});
     res.send("done");
     }
   }
